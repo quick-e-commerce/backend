@@ -122,7 +122,7 @@ public class UserAuthorizationService {
     }
 
     private Boolean isValid(UserLoginDTO userLoginDTO) {
-        return isValid(userLoginDTO.getToken());
+        return isValid(userLoginDTO.getAccessToken());
     }
 
     private Boolean isValid(String accessToken) {
@@ -153,7 +153,7 @@ public class UserAuthorizationService {
     }
 
     private String getUsername(UserLoginDTO userLoginDTO) {
-        return jwtService.parse(userLoginDTO.getToken()).getAudience();
+        return jwtService.parse(userLoginDTO.getAccessToken()).getAudience();
     }
 
     private LocalDateTime toLocalDateTime(Date date) {

@@ -13,16 +13,16 @@ public class UserLoginDTO {
     public static UserLoginDTO from(UserLoginEntity entity) {
         return builder()
                 .user(UserDTO.from(entity.getUser()))
-                .token(entity.getToken())
-                .expiresAt(entity.getExpiresAt())
+                .accessToken(entity.getToken())
+                .accessTokenExpiresAt(entity.getExpiresAt())
                 .build();
     }
 
     private UserDTO user;
 
     @NonNull
-    private String token;
+    private String accessToken;
 
     @NonNull
-    private LocalDateTime expiresAt;
+    private LocalDateTime accessTokenExpiresAt;
 }
