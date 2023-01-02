@@ -1,9 +1,8 @@
 package com.example.demo.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 import java.security.Key;
 import java.time.LocalDateTime;
@@ -49,8 +48,18 @@ public class JsonWebTokenService {
      *
      * @param jwts 사용자의 JWTs
      * @return 디코딩 된 Payload 정보를 반환합니다.
+     * @throws SignatureException       토큰 서명이 잘못되었을 시에 발생합니다.
+     * @throws MalformedJwtException    토큰이 오염되었을 시에 발생합니다.
+     * @throws ExpiredJwtException      토큰이 만료되었을 시에 발생합니다.
+     * @throws UnsupportedJwtException  지원되는 JWTs 형식이 아니면 발생합니다.
+     * @throws IllegalArgumentException 토큰이 {@code null}이거나 공백이면 발생합니다.
      */
-    public Claims parse(String jwts) {
+    public Claims parse(String jwts) throws
+            SignatureException,
+            MalformedJwtException,
+            ExpiredJwtException,
+            UnsupportedJwtException,
+            IllegalArgumentException {
         return Jwts.parserBuilder()
                 .setSigningKey(KEY)
                 .build()
