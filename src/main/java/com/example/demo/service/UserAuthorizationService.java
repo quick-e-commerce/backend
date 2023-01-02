@@ -23,7 +23,8 @@ public class UserAuthorizationService {
     @Autowired
     private UserLoginEntityRepository userLoginEntityRepository;
 
-    private final JsonWebTokenService jwtService = new JsonWebTokenService();
+    @Autowired
+    private JsonWebTokenService jwtService;
 
     /**
      * <p>사용자 인증에 필요한 토큰을 발행합니다.</p>

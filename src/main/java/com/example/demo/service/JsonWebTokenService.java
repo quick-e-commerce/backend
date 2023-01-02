@@ -3,12 +3,14 @@ package com.example.demo.service;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+@Service
 public class JsonWebTokenService {
     // TODO: Make secret-key configurable.
     private final Key KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
