@@ -18,7 +18,7 @@ public class UserLoginEntity {
 
     @MapsId
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn
     private UserEntity user;
 
     @NonNull
