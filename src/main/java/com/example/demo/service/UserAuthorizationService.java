@@ -53,10 +53,11 @@ public class UserAuthorizationService {
 
     private void applyToDatabase(String token) throws UserNotFoundException {
         Claims payload = jwtService.parse(token);
-        Integer userId = ensureFindUserEntity(payload.getAudience()).getId();
-        UserLoginEntity userLoginEntity = userLoginEntityRepository.findById(userId)
+        UserEntity userEntity = ensureFindUserEntity(payload.getAudience());
+        UserLoginEntity userLoginEntity = userLoginEntityRepository.findById(userEntity.getId())
                 .orElseGet(() -> UserLoginEntity.builder()
-                        .userId(userId)
+                        .userId(userEntity.getId())
+                        .user(userEntity)
                         .token(token)
                         .expiresAt(toLocalDateTime(payload.getExpiration()))
                         .build());
