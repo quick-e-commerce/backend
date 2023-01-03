@@ -4,7 +4,6 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -21,7 +20,4 @@ public class UserEntity {
     private String password;
 
     private LocalDateTime createdAt;
-
-    @OneToMany
-    private List<ProductEntity> wishlist;
 }
