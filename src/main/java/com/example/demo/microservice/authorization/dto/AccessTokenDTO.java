@@ -10,10 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 public class AccessTokenDTO {
     @NonNull
-    private UserDTO user;
-
-    @NonNull
-    private String accessToken;
+    private String token;
 
     @NonNull
     private LocalDateTime expiration;

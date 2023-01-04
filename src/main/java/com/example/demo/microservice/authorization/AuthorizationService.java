@@ -4,10 +4,7 @@ import com.example.demo.database.User;
 import com.example.demo.database.UserAccessToken;
 import com.example.demo.database.UserAccessTokenRepository;
 import com.example.demo.database.UserRepository;
-import com.example.demo.microservice.authorization.dto.AccessTokenDTO;
-import com.example.demo.microservice.authorization.dto.UserDTO;
-import com.example.demo.microservice.authorization.dto.UserLoginDTO;
-import com.example.demo.microservice.authorization.dto.UserLogoutDTO;
+import com.example.demo.microservice.authorization.dto.*;
 import com.example.demo.microservice.authorization.exception.UserNotFoundException;
 import com.example.demo.microservice.authorization.exception.UserPasswordMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +36,16 @@ public class AuthorizationService {
      * @throws UserNotFoundException         사용자명에 해당하는 사용자가 없을 때 발생합니다.
      * @throws UserPasswordMismatchException 사용자의 비밀번호가 일치하지 않을 때 발생합니다.
      */
-    public AccessTokenDTO login(UserLoginDTO userLoginDTO) throws IllegalArgumentException, UserNotFoundException, UserPasswordMismatchException {
+    public UserAccessTokenDTO login(UserLoginDTO userLoginDTO) throws IllegalArgumentException, UserNotFoundException, UserPasswordMismatchException {
         checkValidOrThrow(userLoginDTO);
         UserDTO userDTO = getUserOrThrow(userLoginDTO);
         AccessTokenDTO accessTokenDTO = createAccessToken(userDTO);
-        saveAccessToken(accessTokenDTO);
-        return accessTokenDTO;
+        UserAccessTokenDTO userAccessTokenDTO = UserAccessTokenDTO.builder()
+                .user(userDTO)
+                .accessToken(accessTokenDTO)
+                .build();
+        saveUserAccessToken(userAccessTokenDTO);
+        return userAccessTokenDTO;
     }
 
     private void checkValidOrThrow(UserLoginDTO userLoginDTO) throws IllegalArgumentException {
@@ -75,18 +76,17 @@ public class AuthorizationService {
         LocalDateTime expiration = LocalDateTime.now().plusMinutes(5);
         String accessToken = jwtProvider.create(userDTO.getUsername(), expiration);
         return AccessTokenDTO.builder()
-                .user(userDTO)
-                .accessToken(accessToken)
+                .token(accessToken)
                 .expiration(expiration)
                 .build();
     }
 
-    private void saveAccessToken(AccessTokenDTO accessTokenDTO) {
+    private void saveUserAccessToken(UserAccessTokenDTO userAccessTokenDTO) {
         UserAccessToken userAccessToken = UserAccessToken.builder()
-                .userId(accessTokenDTO.getUser().getId())
-                .token(accessTokenDTO.getAccessToken())
-                .createdAt(accessTokenDTO.getCreatedAt())
-                .expiration(accessTokenDTO.getExpiration())
+                .userId(userAccessTokenDTO.getUser().getId())
+                .token(userAccessTokenDTO.getAccessToken().getToken())
+                .createdAt(userAccessTokenDTO.getAccessToken().getCreatedAt())
+                .expiration(userAccessTokenDTO.getAccessToken().getExpiration())
                 .build();
         userAccessTokenRepository.saveAndFlush(userAccessToken);
     }

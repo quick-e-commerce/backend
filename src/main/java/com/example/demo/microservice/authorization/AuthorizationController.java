@@ -1,6 +1,6 @@
 package com.example.demo.microservice.authorization;
 
-import com.example.demo.microservice.authorization.dto.AccessTokenDTO;
+import com.example.demo.microservice.authorization.dto.UserAccessTokenDTO;
 import com.example.demo.microservice.authorization.dto.UserLoginDTO;
 import com.example.demo.microservice.authorization.exception.UserNotFoundException;
 import com.example.demo.microservice.authorization.exception.UserPasswordMismatchException;
@@ -19,7 +19,7 @@ public class AuthorizationController {
     AuthorizationService authorizationService;
 
     @PostMapping("/login")
-    public ResponseEntity<AccessTokenDTO> login(
+    public ResponseEntity<UserAccessTokenDTO> login(
             @RequestParam String username,
             @RequestParam String password
     ) {
@@ -28,8 +28,7 @@ public class AuthorizationController {
                     .username(username)
                     .password(password)
                     .build();
-            AccessTokenDTO accessTokenDTO = authorizationService.login(userLoginDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(accessTokenDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(authorizationService.login(userLoginDTO));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (UserNotFoundException e) {
