@@ -1,6 +1,7 @@
 package com.example.demo.microservice.authorization;
 
 import com.example.demo.database.User;
+import com.example.demo.database.UserAccessToken;
 import com.example.demo.database.UserAccessTokenRepository;
 import com.example.demo.database.UserRepository;
 import com.example.demo.microservice.authorization.dto.AccessTokenDTO;
@@ -41,7 +42,9 @@ public class AuthorizationService {
     public AccessTokenDTO login(UserLoginDTO userLoginDTO) throws IllegalArgumentException, UserNotFoundException, UserPasswordMismatchException {
         checkValidOrThrow(userLoginDTO);
         UserDTO userDTO = getUserOrThrow(userLoginDTO);
-        return createAccessToken(userDTO);
+        AccessTokenDTO accessTokenDTO = createAccessToken(userDTO);
+        saveAccessToken(accessTokenDTO);
+        return accessTokenDTO;
     }
 
     private void checkValidOrThrow(UserLoginDTO userLoginDTO) throws IllegalArgumentException {
@@ -76,6 +79,16 @@ public class AuthorizationService {
                 .accessToken(accessToken)
                 .expiration(expiration)
                 .build();
+    }
+
+    private void saveAccessToken(AccessTokenDTO accessTokenDTO) {
+        UserAccessToken userAccessToken = UserAccessToken.builder()
+                .userId(accessTokenDTO.getUser().getId())
+                .token(accessTokenDTO.getAccessToken())
+                .createdAt(accessTokenDTO.getCreatedAt())
+                .expiration(accessTokenDTO.getExpiration())
+                .build();
+        userAccessTokenRepository.saveAndFlush(userAccessToken);
     }
 
     /**
