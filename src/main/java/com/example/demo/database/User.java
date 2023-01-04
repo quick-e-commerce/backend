@@ -1,14 +1,14 @@
-package com.example.demo.domain.entity;
+package com.example.demo.database;
 
-import lombok.Getter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user")
-@Getter
-public class UserEntity {
+@Data
+public class User {
     @Id
     @GeneratedValue
     private Integer id;
@@ -19,5 +19,6 @@ public class UserEntity {
     @Column(length = 24)
     private String password;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 }

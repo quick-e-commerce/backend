@@ -1,4 +1,4 @@
-package com.example.demo.domain.entity;
+package com.example.demo.database;
 
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ public class OrderEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private User userEntity;
     //private String userId;
     @OneToOne
     @JoinColumn(name = "delivery_id")
