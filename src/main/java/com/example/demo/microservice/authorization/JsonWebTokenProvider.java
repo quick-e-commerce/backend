@@ -1,44 +1,33 @@
-package com.example.demo.service;
+package com.example.demo.microservice.authorization;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-@Service
-public class JsonWebTokenService {
-    // TODO: Make secret-key configurable.
-    private final Key KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+public class JsonWebTokenProvider {
+    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     /**
-     * 사용자명을 입력 받아 인증 토큰을 생성합니다.
+     * <p>특정 대상에 대한 JSON Web Token을 생성합니다.</p>
      *
-     * @param username 사용자명
-     * @return 생성된 JWTs를 반환합니다.
+     * @param audience   대상의 고유 식별자
+     * @param expiration 토큰의 만료 시각
+     * @return 생성된 토큰 문자열을 반환합니다.
      */
-    public String create(String username) {
+    public String create(String audience, LocalDateTime expiration) {
         Claims payload = Jwts.claims()
-                .setAudience(username)
-                .setIssuedAt(createIssuedAt())
-                .setExpiration(createExpiration());
+                .setAudience(audience)
+                .setIssuedAt(toDate(LocalDateTime.now()))
+                .setExpiration(toDate(expiration));
         return Jwts.builder()
                 .setClaims(payload)
-                .signWith(KEY)
+                .signWith(SECRET_KEY)
                 .compact();
-    }
-
-    private Date createIssuedAt() {
-        return toDate(LocalDateTime.now());
-    }
-
-    private Date createExpiration() {
-        // TODO: Make token-lifetime configurable.
-        return toDate(LocalDateTime.now().plusDays(1));
     }
 
     private Date toDate(LocalDateTime ldt) {
@@ -63,7 +52,7 @@ public class JsonWebTokenService {
             UnsupportedJwtException,
             IllegalArgumentException {
         return Jwts.parserBuilder()
-                .setSigningKey(KEY)
+                .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(jwts)
                 .getBody();

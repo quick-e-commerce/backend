@@ -1,4 +1,4 @@
-package com.example.demo.domain.entity;
+package com.example.demo.database;
 
 public enum OrderStatus {
     PENDING, PROCESSING
