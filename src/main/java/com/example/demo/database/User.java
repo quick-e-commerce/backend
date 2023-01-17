@@ -1,6 +1,9 @@
 package com.example.demo.database;
 
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user")
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
     @Id
     @GeneratedValue
@@ -21,4 +25,11 @@ public class User {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @Builder
+    public User(String username, String password, LocalDateTime createdAt) {
+        this.username = username;
+        this.password = password;
+        this.createdAt = createdAt;
+    }
 }
